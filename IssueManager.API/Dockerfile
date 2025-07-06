@@ -12,19 +12,20 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["IssueManager/IssueManager.csproj", "IssueManager/"]
-RUN dotnet restore "./IssueManager/IssueManager.csproj"
+COPY ["IssueManager.API/IssueManager.API.csproj", "IssueManager.API/"]
+COPY ["IssueManager.Core/IssueManager.Core.csproj", "IssueManager.Core/"]
+RUN dotnet restore "./IssueManager.API/IssueManager.API.csproj"
 COPY . .
-WORKDIR "/src/IssueManager"
-RUN dotnet build "./IssueManager.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/IssueManager.API"
+RUN dotnet build "./IssueManager.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./IssueManager.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./IssueManager.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "IssueManager.dll"]
+ENTRYPOINT ["dotnet", "IssueManager.API.dll"]
