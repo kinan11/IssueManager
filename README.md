@@ -59,7 +59,7 @@ Creates a new issue on GitHub or GitLab.
   "title": "Sample issue title",
   "description": "Detailed description of the issue.",
   "repo": {
-    "provider": "GitHub", // or "GitLab"
+    "provider": "GitHub",
     "owner": "username_or_org",
     "name": "repository-name"
   }
