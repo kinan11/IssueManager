@@ -9,27 +9,6 @@ namespace IssueManager.Tests.Validators
         private readonly AddIssueRequestValidator _validator = new();
 
         [Fact]
-        public void Should_Fail_When_Title_Is_Empty()
-        {
-            var model = new AddIssueRequest
-            {
-                Title = "",
-                Description = "Some description",
-                Repo = new RepoDto
-                {
-                    Owner = "test",
-                    Repo = "repo",
-                    Provider = "github",
-                },
-            };
-
-            var result = _validator.Validate(model);
-
-            result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Title");
-        }
-
-        [Fact]
         public void Should_Fail_When_Description_Is_Empty()
         {
             var model = new AddIssueRequest
@@ -51,6 +30,27 @@ namespace IssueManager.Tests.Validators
         }
 
         [Fact]
+        public void Should_Fail_When_Repo_Is_Invalid()
+        {
+            var model = new AddIssueRequest
+            {
+                Title = "Valid title",
+                Description = "Valid description",
+                Repo = new RepoDto
+                {
+                    Owner = "",
+                    Repo = "",
+                    Provider = "",
+                },
+            };
+
+            var result = _validator.Validate(model);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(e => e.PropertyName.StartsWith("Repo"));
+        }
+
+        [Fact]
         public void Should_Fail_When_Repo_Is_Null()
         {
             var model = new AddIssueRequest
@@ -67,24 +67,24 @@ namespace IssueManager.Tests.Validators
         }
 
         [Fact]
-        public void Should_Fail_When_Repo_Is_Invalid()
+        public void Should_Fail_When_Title_Is_Empty()
         {
             var model = new AddIssueRequest
             {
-                Title = "Valid title",
-                Description = "Valid description",
+                Title = "",
+                Description = "Some description",
                 Repo = new RepoDto
                 {
-                    Owner = "", // Invalid
-                    Repo = "", // Invalid
-                    Provider = "", // Invalid
+                    Owner = "test",
+                    Repo = "repo",
+                    Provider = "github",
                 },
             };
 
             var result = _validator.Validate(model);
 
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName.StartsWith("Repo"));
+            result.Errors.Should().Contain(e => e.PropertyName == "Title");
         }
 
         [Fact]

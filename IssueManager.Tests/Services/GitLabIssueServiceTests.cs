@@ -28,6 +28,35 @@ namespace IssueManager.Tests.Services
         }
 
         [Fact]
+        public async Task AddIssueAsync_ApiError_ThrowsInvalidOperationException()
+        {
+            SetupHttpResponse(
+                HttpMethod.Post,
+                HttpStatusCode.BadRequest,
+                "{\"message\":\"bad request\"}"
+            );
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _service.AddIssueAsync(
+                    new AddIssueRequest
+                    {
+                        Title = "Test",
+                        Description = "Desc",
+                        Repo = new RepoDto
+                        {
+                            Owner = "group",
+                            Repo = "project",
+                            Provider = "gitlab",
+                        },
+                    }
+                )
+            );
+
+            Assert.Contains("API error", ex.Message);
+            Assert.Contains("BadRequest", ex.Message);
+        }
+
+        [Fact]
         public async Task AddIssueAsync_ReturnsIssueIid()
         {
             var responseContent = "{\"iid\": 456}";
@@ -67,6 +96,18 @@ namespace IssueManager.Tests.Services
         }
 
         [Fact]
+        public void Constructor_WithoutToken_ThrowsInvalidOperationException()
+        {
+            var config = new ConfigurationBuilder().AddInMemoryCollection().Build(); // brak tokena
+
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+                new GitLabIssueService(config, new HttpClient())
+            );
+
+            Assert.Equal("GitLab token is not configured.", ex.Message);
+        }
+
+        [Fact]
         public async Task UpdateIssueAsync_Success()
         {
             SetupHttpResponse(HttpMethod.Put, HttpStatusCode.OK);
@@ -85,47 +126,6 @@ namespace IssueManager.Tests.Services
                     },
                 }
             );
-        }
-
-        [Fact]
-        public void Constructor_WithoutToken_ThrowsInvalidOperationException()
-        {
-            var config = new ConfigurationBuilder().AddInMemoryCollection().Build(); // brak tokena
-
-            var ex = Assert.Throws<InvalidOperationException>(() =>
-                new GitLabIssueService(config, new HttpClient())
-            );
-
-            Assert.Equal("GitLab token is not configured.", ex.Message);
-        }
-
-        [Fact]
-        public async Task AddIssueAsync_ApiError_ThrowsInvalidOperationException()
-        {
-            SetupHttpResponse(
-                HttpMethod.Post,
-                HttpStatusCode.BadRequest,
-                "{\"message\":\"bad request\"}"
-            );
-
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-                _service.AddIssueAsync(
-                    new AddIssueRequest
-                    {
-                        Title = "Test",
-                        Description = "Desc",
-                        Repo = new RepoDto
-                        {
-                            Owner = "group",
-                            Repo = "project",
-                            Provider = "gitlab",
-                        },
-                    }
-                )
-            );
-
-            Assert.Contains("API error", ex.Message);
-            Assert.Contains("BadRequest", ex.Message);
         }
 
         [Fact]

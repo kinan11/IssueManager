@@ -2,15 +2,14 @@
 using System.Text;
 using IssueManager.Core.Services;
 using Microsoft.Extensions.Configuration;
-using Moq;
 
 namespace IssueManager.Tests.Services
 {
     public class IssueServiceFactoryTests
     {
+        private readonly IssueServiceFactory _factory;
         private readonly GitHubIssueService _gitHubService;
         private readonly GitLabIssueService _gitLabService;
-        private readonly IssueServiceFactory _factory;
 
         public IssueServiceFactoryTests()
         {

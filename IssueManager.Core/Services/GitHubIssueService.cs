@@ -1,9 +1,7 @@
-﻿using IssueManager.Core.Interfaces;
+﻿using System.Text.Json;
+using IssueManager.Core.Interfaces;
 using IssueManager.Core.Models;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace IssueManager.Core.Services
 {
@@ -12,13 +10,14 @@ namespace IssueManager.Core.Services
     /// </summary>
     public class GitHubIssueService : BaseIssueService, IIssueService
     {
-        private readonly string _accessToken;
         private const string ApiBaseUrl = "https://api.github.com/repos/";
+        private readonly string _accessToken;
 
         public GitHubIssueService(IConfiguration config, HttpClient client)
             : base(client)
         {
-            _accessToken = config.GetSection("AccessTokens")["GitHub"]
+            _accessToken =
+                config.GetSection("AccessTokens")["GitHub"]
                 ?? throw new InvalidOperationException("GitHub token is not configured.");
         }
 
@@ -50,16 +49,19 @@ namespace IssueManager.Core.Services
             var url = $"{ApiBaseUrl}{request.Repo.Owner}/{request.Repo.Repo}/issues/{issueNumber}";
 
             var body = new Dictionary<string, object>();
-            if (!string.IsNullOrWhiteSpace(request.Title)) body["title"] = request.Title;
-            if (!string.IsNullOrWhiteSpace(request.Description)) body["body"] = request.Description;
+            if (!string.IsNullOrWhiteSpace(request.Title))
+                body["title"] = request.Title;
+            if (!string.IsNullOrWhiteSpace(request.Description))
+                body["body"] = request.Description;
 
             await SendJsonRequestAsync(HttpMethod.Patch, url, body, GetAuthHeaders());
         }
 
-        private Dictionary<string, string> GetAuthHeaders() => new()
-        {
-            { "Authorization", $"Bearer {_accessToken}" },
-            { "X-GitHub-Api-Version", "2022-11-28" }
-        };
+        private Dictionary<string, string> GetAuthHeaders() =>
+            new()
+            {
+                { "Authorization", $"Bearer {_accessToken}" },
+                { "X-GitHub-Api-Version", "2022-11-28" },
+            };
     }
 }

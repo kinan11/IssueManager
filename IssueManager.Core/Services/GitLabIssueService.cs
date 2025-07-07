@@ -1,9 +1,8 @@
-﻿using IssueManager.Core.Interfaces;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using IssueManager.Core.Interfaces;
 using IssueManager.Core.Models;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace IssueManager.Core.Services
 {
@@ -12,16 +11,20 @@ namespace IssueManager.Core.Services
     /// </summary>
     public class GitLabIssueService : BaseIssueService, IIssueService
     {
-        private readonly string _accessToken;
         private const string ApiBaseUrl = "https://gitlab.com/api/v4/projects/";
+        private readonly string _accessToken;
 
         public GitLabIssueService(IConfiguration config, HttpClient client)
             : base(client)
         {
-            _accessToken = config.GetSection("AccessTokens")["GitLab"]
+            _accessToken =
+                config.GetSection("AccessTokens")["GitLab"]
                 ?? throw new InvalidOperationException("GitLab token is not configured.");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                _accessToken
+            );
         }
 
         public async Task<int> AddIssueAsync(AddIssueRequest request)

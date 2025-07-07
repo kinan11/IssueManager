@@ -33,16 +33,17 @@ namespace IssueManager.Core.Services
         /// <param name="additionalHeaders">Optional additional headers to include.</param>
         /// <returns>The response body as a string.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the response is not successful.</exception>
-
-        protected async Task<string> SendJsonRequestAsync(HttpMethod method, string url, object body, Dictionary<string, string>? additionalHeaders = null)
+        protected async Task<string> SendJsonRequestAsync(
+            HttpMethod method,
+            string url,
+            object body,
+            Dictionary<string, string>? additionalHeaders = null
+        )
         {
             var json = JsonSerializer.Serialize(body);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            using var request = new HttpRequestMessage(method, url)
-            {
-                Content = content
-            };
+            using var request = new HttpRequestMessage(method, url) { Content = content };
 
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -59,7 +60,9 @@ namespace IssueManager.Core.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new InvalidOperationException($"API error: {response.StatusCode} - {responseContent}");
+                throw new InvalidOperationException(
+                    $"API error: {response.StatusCode} - {responseContent}"
+                );
             }
 
             return responseContent;

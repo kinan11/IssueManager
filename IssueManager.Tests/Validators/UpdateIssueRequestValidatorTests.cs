@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using FluentValidation;
 using IssueManager.Core.Models;
 using IssueManager.Core.Models.Validators;
 
@@ -18,7 +17,7 @@ namespace IssueManager.Tests.Validators
                 Description = "desc",
                 Repo = new RepoDto
                 {
-                    Owner = "", // Invalid
+                    Owner = "",
                     Repo = "repo",
                     Provider = "gitlab",
                 },

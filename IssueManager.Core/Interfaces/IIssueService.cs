@@ -17,14 +17,14 @@ namespace IssueManager.Core.Interfaces
         /// <summary>
         /// Closes an existing issue.
         /// </summary>
-        /// <param name="issueNumber">Issue identifier.</param>
+        /// <param name="issueNumber">Issue number.</param>
         /// <param name="repo">Repository details.</param>
         Task CloseIssueAsync(int issueNumber, RepoDto repo);
 
         /// <summary>
         /// Updates an existing issue.
         /// </summary>
-        /// <param name="issueNumber">Issue identifier.</param>
+        /// <param name="issueNumber">Issue number.</param>
         /// <param name="updateIssueRequest">Request containing update information.</param>
         Task UpdateIssueAsync(int issueNumber, UpdateIssueRequest updateIssueRequest);
     }

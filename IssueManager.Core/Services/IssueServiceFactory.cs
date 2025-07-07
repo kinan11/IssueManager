@@ -8,7 +8,10 @@ namespace IssueManager.Core.Services
     /// </summary>
     /// <param name="gitHubService">An instance of <see cref="GitHubIssueService"/>.</param>
     /// <param name="gitLabService">An instance of <see cref="GitLabIssueService"/>.</param>
-    public class IssueServiceFactory(GitHubIssueService gitHubService, GitLabIssueService gitLabService): IIssueServiceFactory
+    public class IssueServiceFactory(
+        GitHubIssueService gitHubService,
+        GitLabIssueService gitLabService
+    ) : IIssueServiceFactory
     {
         /// <summary>
         /// Returns the appropriate <see cref="IIssueService"/> implementation
@@ -23,7 +26,10 @@ namespace IssueManager.Core.Services
             {
                 "github" => gitHubService,
                 "gitlab" => gitLabService,
-                _ => throw new ArgumentOutOfRangeException(nameof(provider), $"Unsupported provider: {provider}")
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(provider),
+                    $"Unsupported provider: {provider}"
+                ),
             };
         }
     }

@@ -28,8 +28,8 @@ namespace IssueManager.API.Controllers
         /// <summary>
         /// Closes an existing issue on the selected Git hosting service.
         /// </summary>
-        /// <param name="issueNumber"></param>
-        /// <param name="repo">Request containing issue identifier and provider.</param>
+        /// <param name="issueNumber">Issue number</param>
+        /// <param name="repo">Request containing information about repo provider.</param>
         /// <returns>The result of the close operation.</returns>
         [HttpPatch("closeIssue/{issueNumber}")]
         public async Task<ActionResult> CloseIssue(int issueNumber, [FromBody] RepoDto repo)
@@ -42,7 +42,7 @@ namespace IssueManager.API.Controllers
         /// <summary>
         /// Updates an existing issue on the selected Git hosting service.
         /// </summary>
-        /// <param name="issueNumber"></param>
+        /// <param name="issueNumber">Issue number</param>
         /// <param name="updateIssueRequest">Request containing updated issue details and provider.</param>
         /// <returns>The result of the update operation.</returns>
         [HttpPatch("updateIssue/{issueNumber}")]
